@@ -1,0 +1,328 @@
+*{
+   box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #E8E8EB;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 26px -7px rgba(105,105,105,1);
+  -moz-box-shadow: 0px 0px 26px -7px rgba(105,105,105,1);
+  box-shadow: 0px 0px 26px -7px rgba(105,105,105,1);
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+.messageContainer {
+  width: 100%;
+  height: calc(100vh - 65px );
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  padding-top: 70px;
+  overflow-y: scroll;
+}
+
+
+.input {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: #14110F;
+  height: 65px;
+  padding: 10px;
+  gap: 8px;
+}
+
+.input > * {
+  height: 100%;
+}
+.input > p{
+  margin: 0px;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 15px;
+  font-weight: bold;
+}
+
+.input > input{
+  flex:1;
+  border-radius: 15px;
+  outline: none;
+  border: none;
+  padding: 0px 10px;
+  background-color: #262626;
+  font-size: 16px;
+}
+
+.input > button{
+ aspect-ratio: 1;
+ border-radius: 45px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ color: #878787;
+ font-size: 18px;
+  background-color: #262626;
+
+}
+
+@-webkit-keyframes fade-in-bottom {
+  0% {
+    -webkit-transform: translateY(50px);
+            transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-in-bottom {
+  0% {
+    -webkit-transform: translateY(50px);
+            transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.solomonMessage ,.userMessage {
+  max-width: 250px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin-bottom: 5px;
+  text-align: left;
+  -webkit-animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.solomonMessage {
+  align-self: flex-start;
+  background-color: #E8E8EB;
+  color: black;
+}
+
+.userMessage{
+  align-self: flex-end;
+  color: white;
+  background-color: #1B8AFF;
+}
+
+.changeCharacter{
+  position: absolute;
+  background-color: #262626;
+  font-size: 16px;
+  max-width: 350px;
+  padding: 20px;
+  -webkit-animation: fade-in-bottom 0.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	animation: fade-in-bottom 0.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.changeCharacter > h2{
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.helpModal{
+  position: absolute;
+  background-color: #262626;
+  font-size: 16px;
+  padding: 20px;
+  width: 350px;
+  padding: 20px;
+  height: 320px;
+  border-radius: 15px;
+  text-align: left;
+  -webkit-animation: fade-in-bottom 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	animation: fade-in-bottom 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.helpModal > h1,.helpModal > h2,.helpModal > h3{
+  margin: 0px;
+}
+
+.helpModal > h1{
+  font-size: 24px;
+}
+
+.helpModal > h2{
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.helpModal > h3{
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.helpModal > h4{
+  font-size: 22px;
+  margin: 0px;
+  margin-top: 20px;
+}
+
+.helpModal > ul{
+  font-size: 18px;
+  margin: 0px;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.header{
+  width: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: flex-end;
+
+}
+.header > button{
+  margin: 10px;
+  background-color: #262626;
+  z-index: 2;
+  border-radius: 25px;
+}
+
+
+.emailCollector{
+  z-index: 3;
+  position: absolute;
+ max-width: 1280px;
+ width: 100%;
+ height: 100%;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+  backdrop-filter: blur(3px);
+}
+.emailCollector > form{
+    -webkit-animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+     max-width: 350px;
+   height: 450px;
+  border: none;
+  background-color: #14110F;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.emailCollector > form > h1, .emailCollector > form > h3{
+  margin: 0px;
+}
+.emailCollector > form > h3{
+  font-weight: normal;
+}
+.emailCollector > form > h1{
+  font-size: 30px;
+}
+
+.inputPair{
+  display: flex;
+  flex-direction: column;
+}
+.inputPair > label {
+  font-weight: bold;
+}
+
+.inputPair > input {
+  border-radius: 15px;
+  outline: none;
+  border: none;
+  padding: 0px 10px;
+  background-color: #262626;
+  font-size: 16px;
+  height: 45px;
+}
+
+.emailCollector > form > button {
+  background-color: #EE964B;
+}
+
+.solomonName,.youName {
+  transition: all cubic-bezier(0.075, 0.82, 0.165, 1) .3s;
+}
+
+.youName {
+  background-color: #1B8AFF;
+  width: 60px;
+}
+.solomonName {
+  background-color: #EE964B;
+  width: 100px;
+}
