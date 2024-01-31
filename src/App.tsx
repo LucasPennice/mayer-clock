@@ -2,33 +2,41 @@ import { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import './index.css'
 import axios from 'axios'
+import copy from 'copy-to-clipboard'
+import { toast } from 'react-toastify'
 
 type Message = {
   sender: "you" | "solomon",
   text:string
 }
+   const copyToClipboard = (text:string) => {
+    const isCopy = copy(text);
+    if (isCopy) toast.success("Copied to Clipboard")
+   };
 
 function App() {
   const [chatToExport, setChatToExport] = useState<string>("")
   const [messages, setMessages] = useState<Message[]>([])
   const [currentCharacter,setCurrentCharacter] = useState<Message["sender"]>("you")
-  const [showCharacterPick, setShowCharacterPick] = useState(false)
+  const [showCharacterPick, setShowCharacterPick] = useState(0)
   const [showHelpModal, setShowHelpModal] = useState(true)
   const [showEmailCollector, setShowEmailCollector] = useState(false)
+  const mobile = useCheckMobileScreen()
 
   const ref = useRef<HTMLInputElement>();
   const scrollRef = useRef<HTMLSpanElement>();
 
   const openCharacterPicker = useCallback(() => {
-    setShowCharacterPick(true)
+    setShowCharacterPick(p=>p+1)
   }, [setShowCharacterPick])
 
   const closeCharacterPicker = useCallback(() => {
-    setShowCharacterPick(false)
-    if(ref.current)ref.current.focus()
+    setShowCharacterPick(2)
   }, [setShowCharacterPick])
 
-    const toggleCharacter = useCallback(() => {
+  const toggleCharacter = useCallback(() => {
+    if (mobile && ref.current) ref.current.blur()
+    
     setCurrentCharacter(prev => {
       if (prev === "solomon") return "you"
       
@@ -36,8 +44,8 @@ function App() {
     })
 
     closeCharacterPicker()
-  },[setCurrentCharacter,closeCharacterPicker])
-
+    }, [mobile, closeCharacterPicker])
+  
   const scrollToNewMessage = () => {
     scrollRef.current?.scrollIntoView({behavior:"smooth"})
   }
@@ -50,25 +58,23 @@ function App() {
     setShowHelpModal(false)
   },[setShowHelpModal])
 
-  const openEmailCollector = useCallback(async () => { 
+
+
+  const openEmailCollector = useCallback(() => { 
     const emailCollected = localStorage.getItem("emailCollected");
 
-    if (emailCollected === "true") {
-      await navigator.clipboard.writeText(chatToExport)
-
-      alert("Chat copied to clipboard!")
-      return 
-    }
+    if (emailCollected === "true") return copyToClipboard(chatToExport)
 
     setShowEmailCollector(true)
-  },[setShowEmailCollector,chatToExport])
-
+  }, [setShowEmailCollector, chatToExport])
+  
   return (
     <main>
       <Header openEmailCollector={ openEmailCollector} disableExport={chatToExport===""} />
       <MessageList scrollToNewMessage={scrollToNewMessage} messages={ messages } ref={ scrollRef } />
-      <Input setChatToExport={ setChatToExport } scrollToNewMessage={ scrollToNewMessage } ref={ ref } currentCharacter={ currentCharacter } setMessages={ setMessages } closeCharacterPicker={ closeCharacterPicker } openCharacterPicker={ openCharacterPicker } toggleCharacter={ toggleCharacter } closeHelpModal={ closeHelpModal} />
-      { showCharacterPick && <ChangeCharacter currentCharacter={ currentCharacter } toggleCharacter={ toggleCharacter } /> }
+      <Input setChatToExport={ setChatToExport } scrollToNewMessage={ scrollToNewMessage } ref={ ref } currentCharacter={ currentCharacter } setMessages={ setMessages }  openCharacterPicker={ openCharacterPicker } toggleCharacter={ toggleCharacter } closeHelpModal={ closeHelpModal } />
+
+      { showCharacterPick===1 && <ChangeCharacter currentCharacter={ currentCharacter } /> }
       { showEmailCollector && <EmailCollector chatToExport={ chatToExport } closeEmailCollector={ closeEmailCollector } />}
       { showHelpModal && <HelpModal />}
     </main>
@@ -93,14 +99,21 @@ const MessageList = forwardRef<HTMLSpanElement | unknown, { messages: Message[] 
   </div>
 })
 
-type InputProps= {closeHelpModal:()=>void,setChatToExport:React.Dispatch<React.SetStateAction<string>>,scrollToNewMessage:()=>void, setMessages: React.Dispatch<React.SetStateAction<Message[]>>, openCharacterPicker: () => void, toggleCharacter: () => void, closeCharacterPicker: () => void, currentCharacter: Message["sender"] }
+type InputProps= {closeHelpModal:()=>void,setChatToExport:React.Dispatch<React.SetStateAction<string>>,scrollToNewMessage:()=>void, setMessages: React.Dispatch<React.SetStateAction<Message[]>>, openCharacterPicker: () => void, toggleCharacter: () => void,currentCharacter: Message["sender"] }
 
-const Input = forwardRef<HTMLInputElement|unknown,InputProps>(function Input(props, ref) {
-  const { closeHelpModal,setMessages, openCharacterPicker, toggleCharacter, closeCharacterPicker, currentCharacter, setChatToExport } = props
+const Input = forwardRef<HTMLInputElement | unknown, InputProps>(function Input(props, ref) {
+  const mobile = useCheckMobileScreen()
+
+  const { closeHelpModal,setMessages, openCharacterPicker, toggleCharacter,  currentCharacter, setChatToExport } = props
 
   const [text, setText] = useState("")
 
   const handleSubmit = useCallback(() => {
+      closeHelpModal()
+
+      openCharacterPicker()
+
+
     if (text === "") return;
 
     setMessages(p => {
@@ -121,50 +134,50 @@ const Input = forwardRef<HTMLInputElement|unknown,InputProps>(function Input(pro
 
     setText("")
 
-    openCharacterPicker()
+    //@ts-expect-error bleh
+    if (mobile && ref.current) ref.current.blur()
   },[text, setMessages, setChatToExport, openCharacterPicker, currentCharacter])
 
+  // PARTE DEL PROBLEMA ESTA ACA 👇
   const onEnter = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
 
-    if(text === "") return toggleCharacter()
+    if (text === "") return toggleCharacter()
 
     return handleSubmit()
+
   }, [handleSubmit, text, toggleCharacter])
   
+  // PARTE DEL PROBLEMA ESTA ACA 👇
   const handleTextChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    closeHelpModal()
-
-    if (e.target.value !== "") {
-      closeCharacterPicker()
-    } else {
-      openCharacterPicker()
-    }
-    
     setText(e.target.value)
-  },[setText,openCharacterPicker,closeCharacterPicker,closeHelpModal])
+  },[setText])
   
   
   return <div className="input">
-    <p className={currentCharacter==="solomon" ? "solomonName" : "youName"}>
+    <p onClick={toggleCharacter} className={currentCharacter==="solomon" ? "solomonName" : "youName"}>
     { currentCharacter === "solomon" ? "Solomon" : "You" }
     </p>
     {/* @ts-expect-error ref error */}
-    <input type="text" name="name" ref={ref} autoComplete="off" autoFocus onKeyDown={onEnter} onChange={handleTextChange} value={text} />
+    <input key={"test"} type="text"  name="name" ref={ref} autoComplete="off" onKeyDown={onEnter} onChange={handleTextChange} value={text}  />
     <button children={"⬆"} onClick={handleSubmit}/>
   </div>
 })
 
-const ChangeCharacter = ({ currentCharacter, toggleCharacter}: { currentCharacter: Message["sender"], toggleCharacter:()=>void }) => {
-  return <button className="changeCharacter" onClick={ toggleCharacter }>
-    <h2>
-    Click here to change perspective to  <span style={{color: currentCharacter !=="solomon"?"#EE964B":"#1B8AFF"}}>{ (currentCharacter !== "solomon" ? "solomon" : "you").toUpperCase() }</span>
-    </h2>
-
-    <h2>
-    Or press ENTER again
-    </h2>    
-  </button>
+const ChangeCharacter = ({ currentCharacter }: { currentCharacter: Message["sender"]}) => {
+  const mobile = useCheckMobileScreen()
+  
+  return <div className="changeCharacter" >
+    { !mobile && <h2 style={{margin:0,marginBottom:15}}>or Press ENTER again</h2> }
+    
+    <div style={{display:"flex",alignItems:"center"}}>
+      <p style={ { fontSize: 32,margin:0 }}>👇</p>
+      
+      <h2 style={{margin:0}}>
+        Click here to change perspective to <span style={{color: currentCharacter !=="solomon"?"#EE964B":"#1B8AFF"}}>{ (currentCharacter !== "solomon" ? "solomon" : "you").toUpperCase() }</span>
+      </h2>
+    </div>
+  </div>
 }
 
 const HelpModal = () => {
@@ -205,14 +218,13 @@ const EmailCollector = ({ chatToExport,closeEmailCollector}:{chatToExport:string
         body[key] = keyValue[1] 
       })
 
-      await navigator.clipboard.writeText(chatToExport)
       await axios.post("https://server.skilltreesapp.com/api/development/solomon", body)
       localStorage.setItem("emailCollected","true");
     } catch (error) {
       console.log(error)
 
     } finally {
-      alert("Chat copied to clipboard!")
+      copyToClipboard(chatToExport)
       closeEmailCollector()
       setLoading(false)
     }
@@ -223,7 +235,7 @@ const EmailCollector = ({ chatToExport,closeEmailCollector}:{chatToExport:string
     <form onSubmit={submitAndCopy}>
       <h1>Export your conversation for free</h1>
     
-      <h3>Leave your email so I can keep you updated on other cool projects (one time ask)</h3>
+      <h3>Leave your email so I can keep you updated on other cool projects</h3>
 
       <div className="inputPair">
       <label htmlFor="firstName">First Name *</label>
@@ -238,4 +250,20 @@ const EmailCollector = ({ chatToExport,closeEmailCollector}:{chatToExport:string
       <button disabled={loading}>{loading ? "Loading..." : "Copy my conversation"}</button>
     </form>
   </div>
+}
+
+const useCheckMobileScreen = () => {
+    const [width, setWidth] = useState(window.innerWidth);
+    const handleWindowSizeChange = () => {
+            setWidth(window.innerWidth);
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
+    return (width <= 768);
 }

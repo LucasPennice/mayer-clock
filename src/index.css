@@ -56,6 +56,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  color: white;
 }
 button:hover {
   border-color: #646cff;
@@ -80,7 +81,7 @@ button:focus-visible {
 
 .messageContainer {
   width: 100%;
-  height: calc(100vh - 65px );
+  height: calc(100svh - 65px );
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -110,6 +111,7 @@ button:focus-visible {
   vertical-align: middle;
   border-radius: 15px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .input > input{
@@ -123,15 +125,14 @@ button:focus-visible {
 }
 
 .input > button{
- aspect-ratio: 1;
+ width: 45px;
  border-radius: 45px;
  display: flex;
  justify-content: center;
  align-items: center;
  color: #878787;
  font-size: 18px;
-  background-color: #262626;
-
+ background-color: #262626;
 }
 
 @-webkit-keyframes fade-in-bottom {
@@ -165,30 +166,87 @@ button:focus-visible {
   border-radius: 12px;
   margin-bottom: 5px;
   text-align: left;
-  -webkit-animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
 }
+
+@-webkit-keyframes fade-in-right {
+  0% {
+    -webkit-transform: translateX(50px);
+            transform: translateX(50px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-in-right {
+  0% {
+    -webkit-transform: translateX(50px);
+            transform: translateX(50px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+@-webkit-keyframes fade-in-left {
+  0% {
+    -webkit-transform: translateX(-50px);
+            transform: translateX(-50px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-in-left {
+  0% {
+    -webkit-transform: translateX(-50px);
+            transform: translateX(-50px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 
 .solomonMessage {
   align-self: flex-start;
   background-color: #E8E8EB;
   color: black;
+    -webkit-animation: fade-in-left 1s cubic-bezier(0.83, 0, 0.17, 1) both;
+	animation: fade-in-left 1s cubic-bezier(0.83, 0, 0.17, 1) both;
 }
 
 .userMessage{
   align-self: flex-end;
   color: white;
   background-color: #1B8AFF;
+    -webkit-animation: fade-in-right 1s cubic-bezier(0.83, 0, 0.17, 1) both;
+	animation: fade-in-right 1s cubic-bezier(0.83, 0, 0.17, 1) both;
 }
 
 .changeCharacter{
   position: absolute;
+  bottom: 75px;
+  left: 10px;
   background-color: #262626;
   font-size: 16px;
   max-width: 350px;
-  padding: 20px;
-  -webkit-animation: fade-in-bottom 0.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	animation: fade-in-bottom 0.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  padding: 20px 20px;
+  border-radius: 20px;
+  -webkit-animation: fade-in-bottom 0.6s cubic-bezier(0.83, 0, 0.17, 1) both;
+	animation: fade-in-bottom 0.6s cubic-bezier(0.83, 0, 0.17, 1) both;
 }
 
 .changeCharacter > h2{
@@ -202,12 +260,10 @@ button:focus-visible {
   font-size: 16px;
   padding: 20px;
   width: 350px;
-  padding: 20px;
-  height: 320px;
   border-radius: 15px;
   text-align: left;
-  -webkit-animation: fade-in-bottom 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	animation: fade-in-bottom 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  -webkit-animation: fade-in-bottom 1s cubic-bezier(0.83, 0, 0.17, 1) both;
+	animation: fade-in-bottom 1s cubic-bezier(0.83, 0, 0.17, 1) both;
 }
 
 .helpModal > h1,.helpModal > h2,.helpModal > h3{
@@ -269,8 +325,8 @@ button:focus-visible {
   backdrop-filter: blur(3px);
 }
 .emailCollector > form{
-    -webkit-animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	animation: fade-in-bottom 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+    -webkit-animation: fade-in-bottom 0.8s cubic-bezier(0.83, 0, 0.17, 1) both;
+	animation: fade-in-bottom 0.8s cubic-bezier(0.83, 0, 0.17, 1) both;
      max-width: 350px;
    height: 450px;
   border: none;
